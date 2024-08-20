@@ -25,6 +25,13 @@ tbl_uvregression(
 	include = c(sex_cat, race_eth_cat,
 							eyesight_cat, income, age_bir),
 	method = lm)
+## this is equivalent to
+# lm(income ~ sex_cat, data = nlsy)
+# lm(income ~ race_eth_cat, data = nlsy)
+# lm(income ~ eyesight_cat, data = nlsy)
+# lm(income ~ income, data = nlsy)
+# lm(income ~ age_bir, data = nlsy)
+
 
 # regression of glasses on a series of predictor (x) variables
 # using a logistic regression model
