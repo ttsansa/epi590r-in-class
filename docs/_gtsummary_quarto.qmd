@@ -1,14 +1,16 @@
 ---
 title: "gtsummary in quarto"
-format:
-  html:
-    theme: yeti
+format: html
 execute:
   echo: false
+  eval: false
 ---
+
+We’re using some data from the National Longitudinal Survey of Youth 1979, a cohort of American young adults aged 14-22 at enrollment in 1979. They continue to be followed to this day, and there is a wealth of publicly available data online. I’ve downloaded the answers to a survey question about whether respondents wear glasses, a scale about their eyesight with glasses, their (NLSY-assigned 😒) race/ethnicity, their sex (presumably at birth, but unclear), their family’s income in 1979, and their age at the birth of their first child.
 
 ```{r}
 #| output: false
+#| eval: true
 library(tidyverse)
 library(gtsummary)
 nlsy_cols <- c("glasses", "eyesight", "sleep_wkdy", "sleep_wknd", 
@@ -24,13 +26,17 @@ nlsy <- read_csv(here::here("data", "raw", "nlsy.csv"),
          glasses_cat = factor(glasses, labels = c("No", "Yes"))) 
 ```
 
+This the number of people in the data
 ```{r}
+#| eval: true
 nrow(nlsy)
 ```
 
 # Customization of `tbl_summary()`
 
 ```{r}
+#| label: tbl-first
+#| tbl-cap: First Table
 tbl_summary(
   nlsy,
   by = sex_cat,
@@ -38,7 +44,10 @@ tbl_summary(
               eyesight_cat, glasses, age_bir))
 ```
 
+@tbl-first is an even better table
+
 ```{r}
+#| eval: false
 tbl_summary(
   nlsy,
   by = sex_cat,
@@ -55,3 +64,47 @@ tbl_summary(
 ```
 
 
+```{r}
+#| label: tbl-last
+#| tbl-cap: Last Table
+tbl_summary(
+  nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir))
+```
+
+@tbl-last shows a great table.
+
+
+```{r}
+#| eval: true
+
+median(nlsy$sleep_wknd, na.rm = TRUE)
+```
+
+```{r}
+#| eval: true
+
+median_sleep_weekends <- median(nlsy$sleep_wknd, na.rm = TRUE)
+```
+
+1. The median number of hours was `r median_sleep_weekends`
+
+2. The median number of hours was `r median(nlsy$sleep_wknd, na.rm = TRUE)`
+
+```{r}
+#| eval: true
+#| label: tbl-descr
+#| tbl-cap: "Descriptive statistics"
+table1 <- tbl_summary(
+  nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir, sleep_wknd)) |> 
+  add_overall(last = TRUE)
+table1
+mean_hrs_sleep <- inline_text(table1, variable = "sleep_wknd", column = "stat_0")
+```
+
+The median and IQR are `r mean_hrs_sleep`
