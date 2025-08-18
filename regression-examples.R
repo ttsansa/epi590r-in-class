@@ -131,4 +131,48 @@ tbl_merge(list(tbl_no_int, tbl_int),
   tab_spanner = c("**Model 1**", "**Model 2**")
 )
 
+#exercise 3
+tbl_uvregression(
+	nlsy,
+	x = sex_cat,
+	include = c(nsibs, sleep_wkdy, sleep_wknd, income),
+	method = lm,
+	label = list(
+		nsibs      ~ "Number of siblings",
+		sleep_wkdy ~ "Sleep on weekdays (hours)",
+		sleep_wknd ~ "Sleep on weekends (hours)",
+		income     ~ "Income"
+	)
+) |>
+	bold_labels()
 
+#exercise 4
+
+poisson_model <- glm(
+	nsibs ~ eyesight_cat + sex_cat + income + region_cat,
+	data = nlsy,
+	family = poisson()
+)
+tbl_regression(poisson_model,exponentiate = TRUE,label=list(sex_cat ~"Sex", eyesight_cat ~"Eyesight", income ~"Income"))
+
+#exercise 5
+log_model <- glm(glasses ~ eyesight_cat + sex_cat,
+											data = nlsy, family = binomial(link = "log")
+)
+tbl_regression(log_model,exponentiate = TRUE, label=list(sex_cat ~"Sex", eyesight_cat ~"Eyesight"))
+
+#exercise 6
+logistic_table <-tbl_regression(
+	logistic_model,
+	exponentiate = TRUE,
+	label=list(
+		sex_cat ~"Sex",
+		eyesight_cat ~"Eyesight"))
+log_table<-tbl_regression(
+	log_model,
+	exponentiate = TRUE,
+	label=list(
+		sex_cat ~"Sex", eyesight_cat ~"Eyesight"))
+tbl_merge(list(logistic_table, log_table),
+					tab_spanner = c("**Logistic regression**", "**Log-linear regression**")
+)
