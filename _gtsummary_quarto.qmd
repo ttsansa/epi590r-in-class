@@ -1,7 +1,9 @@
 ---
 title: "gtsummary in quarto"
 format: html
+
 ---
+
 
 ```{r}
 library(tidyverse)
@@ -28,10 +30,19 @@ tbl_summary(
   include = c(sex_cat, race_eth_cat, region_cat,
               eyesight_cat, glasses, age_bir))
 ```
-
+#exercise part 2:
 ```{r}
 tbl_summary(
   nlsy,
+  by = eyesight_cat,
+  include = c( race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir))
+
+```
+
+```{r}
+tbl_summary(
+ nlsy,
   by = sex_cat,
   include = c(sex_cat, race_eth_cat, region_cat,
               eyesight_cat, glasses, age_bir),
@@ -44,3 +55,52 @@ tbl_summary(
   ),
   missing_text = "Missing")
 ```
+
+#exercise part 2
+```{r}
+#| label: tbl-descr
+#| tbl-cap: "Descriptive statistics"
+#| output-location: slide
+tbl_summary(
+ nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat,
+              eyesight_cat, glasses, age_bir))
+
+```
+
+```{r}
+mean_sleep_weekend<- mean(nlsy$sleep_wknd, na.rm =TRUE)
+mean_sleep_weekend
+```
+People slept an average of 'r gtsummary::inline_text (mean(nlsy$sleep_wknd, 2))'hours.
+```{r}
+
+tbl1 <- tbl_summary(
+  nlsy,
+  by = sex_cat,
+  include = c(sex_cat, race_eth_cat, region_cat, eyesight_cat, glasses, age_bir),
+  label = list(
+    race_eth_cat ~ "Race/ethnicity",
+    region_cat   ~ "Region",
+    eyesight_cat ~ "Eyesight",
+    glasses      ~ "Wears glasses",
+    age_bir      ~ "Age at first birth"
+  ),
+  missing_text = "Missing"
+) |> bold_labels()
+
+tbl1
+
+sleep_median_tbl <- tbl_summary(
+  nlsy,
+  include  = c(sleep_wknd),
+  statistic = list(all_continuous() ~ "{median} ({p25}, {p75})"),
+  digits    = list(all_continuous() ~ 1)
+) |> 
+  modify_header(label ~ "**Variable**") |>
+  bold_labels()
+
+sleep_median_tbl
+```
+The median weekend sleep (overall) is r gtsummary::inline_text(sleep_median_tbl, variable = sleep_wknd, pattern = "{median}") hours.
