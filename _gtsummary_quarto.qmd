@@ -73,7 +73,7 @@ tbl_summary(
 mean_sleep_weekend<- mean(nlsy$sleep_wknd, na.rm =TRUE)
 mean_sleep_weekend
 ```
-People slept an average of 'r gtsummary::inline_text (mean(nlsy$sleep_wknd, 2))'hours.
+People slept an average of `r gtsummary::inline_text (mean(nlsy$sleep_wknd, 2))`hours.
 ```{r}
 
 tbl1 <- tbl_summary(
@@ -103,4 +103,4 @@ sleep_median_tbl <- tbl_summary(
 
 sleep_median_tbl
 ```
-The median weekend sleep (overall) is r gtsummary::inline_text(sleep_median_tbl, variable = sleep_wknd, pattern = "{median}") hours.
+The median weekend sleep (overall) is `r gtsummary::inline_text(sleep_median_tbl, variable = sleep_wknd, pattern = "{median}")` hours.
